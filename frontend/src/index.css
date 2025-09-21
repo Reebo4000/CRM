@@ -1,0 +1,850 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light theme colors */
+    --color-background: 248 250 252;
+    --color-foreground: 15 23 42;
+    --color-card: 255 255 255;
+    --color-card-foreground: 15 23 42;
+    --color-popover: 255 255 255;
+    --color-popover-foreground: 15 23 42;
+    --color-primary: 14 165 233;
+    --color-primary-foreground: 248 250 252;
+    --color-secondary: 241 245 249;
+    --color-secondary-foreground: 15 23 42;
+    --color-muted: 241 245 249;
+    --color-muted-foreground: 100 116 139;
+    --color-accent: 241 245 249;
+    --color-accent-foreground: 15 23 42;
+    --color-destructive: 239 68 68;
+    --color-destructive-foreground: 248 250 252;
+    --color-border: 226 232 240;
+    --color-input: 226 232 240;
+    --color-ring: 14 165 233;
+    --color-success: 34 197 94;
+    --color-warning: 245 158 11;
+    --color-info: 59 130 246;
+
+    /* Sidebar colors */
+    --color-sidebar-background: 15 23 42;
+    --color-sidebar-foreground: 248 250 252;
+    --color-sidebar-primary: 14 165 233;
+    --color-sidebar-primary-foreground: 248 250 252;
+    --color-sidebar-accent: 30 41 59;
+    --color-sidebar-accent-foreground: 148 163 184;
+    --color-sidebar-border: 30 41 59;
+    --color-sidebar-ring: 14 165 233;
+  }
+
+  .dark {
+    /* Dark theme colors */
+    --color-background: 2 6 23;
+    --color-foreground: 248 250 252;
+    --color-card: 15 23 42;
+    --color-card-foreground: 248 250 252;
+    --color-popover: 15 23 42;
+    --color-popover-foreground: 248 250 252;
+    --color-primary: 56 189 248;
+    --color-primary-foreground: 15 23 42;
+    --color-secondary: 30 41 59;
+    --color-secondary-foreground: 248 250 252;
+    --color-muted: 30 41 59;
+    --color-muted-foreground: 148 163 184;
+    --color-accent: 30 41 59;
+    --color-accent-foreground: 248 250 252;
+    --color-destructive: 220 38 38;
+    --color-destructive-foreground: 248 250 252;
+    --color-border: 30 41 59;
+    --color-input: 30 41 59;
+    --color-ring: 56 189 248;
+    --color-success: 34 197 94;
+    --color-warning: 245 158 11;
+    --color-info: 59 130 246;
+
+    /* Dark sidebar colors */
+    --color-sidebar-background: 8 15 35;
+    --color-sidebar-foreground: 248 250 252;
+    --color-sidebar-primary: 56 189 248;
+    --color-sidebar-primary-foreground: 15 23 42;
+    --color-sidebar-accent: 15 23 42;
+    --color-sidebar-accent-foreground: 148 163 184;
+    --color-sidebar-border: 15 23 42;
+    --color-sidebar-ring: 56 189 248;
+  }
+
+  * {
+    border-color: rgb(var(--color-border));
+  }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-variation-settings: normal;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    margin: 0;
+    min-height: 100vh;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+}
+
+@layer components {
+  /* Modern Button Components */
+  .btn {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium ring-offset-white transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow-md;
+  }
+
+  .btn-secondary {
+    @apply btn bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-300;
+  }
+
+  .btn-outline {
+    @apply btn border border-gray-300 bg-white hover:bg-gray-50 hover:text-gray-900;
+  }
+
+  .btn-ghost {
+    @apply btn hover:bg-gray-100 hover:text-gray-900;
+  }
+
+  .btn-destructive {
+    @apply btn bg-red-600 text-white hover:bg-red-700 shadow-sm;
+  }
+
+  .btn-success {
+    @apply btn bg-green-600 text-white hover:bg-green-700 shadow-sm;
+  }
+
+  .btn-warning {
+    @apply btn bg-yellow-500 text-white hover:bg-yellow-600 shadow-sm;
+  }
+
+  /* Button sizes */
+  .btn-sm {
+    @apply h-9 px-3 text-xs;
+  }
+
+  .btn-md {
+    @apply h-10 px-4 py-2 m-auto;
+  }
+
+  .btn-lg {
+    @apply h-11 px-8 text-base;
+  }
+
+  .btn-xl {
+    @apply h-12 px-10 text-lg;
+  }
+
+  /* Form Components */
+  .form-input {
+    @apply flex h-10 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200;
+  }
+
+  .form-input-error {
+    @apply border-red-600 focus-visible:ring-red-600;
+  }
+
+  .form-label {
+    @apply text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-900;
+  }
+
+  .form-textarea {
+    @apply flex min-h-[80px] w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none transition-all duration-200;
+  }
+
+  .form-select {
+    @apply flex h-10 w-full items-center justify-between rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200;
+  }
+
+.form-select1 {
+  
+    display: flex
+;
+    height: 2.5rem;
+    width: 32%;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0.75rem;
+    border-width: 1px;
+    --tw-border-opacity: 1;
+    border-color: rgb(209 213 219 / var(--tw-border-opacity, 1));
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    --tw-ring-offset-color: #fff;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;}
+  /* Card Components */
+  .card {
+    @apply rounded-2xl border border-gray-300 bg-white text-gray-900 shadow-sm;
+  }
+
+  .card-header {
+    @apply flex flex-col space-y-1.5 p-6;
+  }
+
+  .card-title {
+    @apply text-2xl font-semibold leading-none tracking-tight;
+  }
+
+  .card-description {
+    @apply text-sm text-gray-600;
+  }
+
+  .card-content {
+    @apply p-2 pt-0;
+  }
+
+  .card-footer {
+    @apply flex items-center p-6 pt-0;
+  }
+
+  /* Modern Table */
+  .table-container {
+    @apply relative w-full overflow-auto rounded-2xl border border-gray-300 bg-white;
+  }
+
+  .table {
+    @apply w-full caption-bottom text-sm;
+  }
+
+  .table-header {
+    @apply border-b border-gray-300 bg-gray-50;
+  }
+
+  .table-header-row {
+    @apply border-b border-gray-300 transition-colors hover:bg-gray-50;
+  }
+
+  .table-header-cell {
+    @apply h-12 px-4 text-left align-middle font-medium text-gray-600;
+  }
+
+  .table-body {
+    @apply [&_tr:last-child]:border-0;
+  }
+
+  .table-row {
+    @apply border-b border-gray-300 transition-colors hover:bg-gray-50;
+  }
+
+  .table-cell {
+    @apply p-2 align-middle;
+  }
+
+  /* Navigation */
+  .nav-link {
+    @apply flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200 hover:bg-gray-100 hover:text-gray-900;
+  }
+
+  .nav-link-active {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    @apply flex h-full w-full flex-col bg-slate-900 text-white;
+  }
+
+  .sidebar-header {
+    @apply flex h-16 items-center border-b border-slate-700 px-6;
+  }
+
+  .sidebar-content {
+    @apply flex-1 overflow-auto py-4;
+  }
+
+  .sidebar-footer {
+    @apply border-t border-slate-700 p-4;
+  }
+
+  .sidebar-nav {
+    @apply space-y-1 px-3;
+  }
+
+  .sidebar-nav-item {
+    @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 hover:bg-slate-700 hover:text-slate-200;
+  }
+
+  .sidebar-nav-item-active {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
+  }
+
+  /* Modal/Dialog */
+  .modal-overlay {
+    @apply fixed inset-0 z-50 bg-black/80 transition-opacity duration-200;
+  }
+
+  .modal-content {
+    @apply fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-gray-300 bg-white p-6 shadow-xl duration-200 rounded-2xl;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center rounded-full border border-gray-300 px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  }
+
+  .badge-default {
+    @apply badge border-transparent bg-blue-600 text-white hover:bg-blue-100;
+  }
+
+  .badge-secondary {
+    @apply badge border-transparent bg-gray-100 text-gray-900 hover:bg-gray-200;
+  }
+
+  .badge-destructive {
+    @apply badge border-transparent bg-red-600 text-white hover:bg-red-700;
+  }
+
+  .badge-outline {
+    @apply badge text-gray-900;
+  }
+
+  .badge-success {
+    @apply badge border-transparent bg-green-600 text-white hover:bg-green-700;
+  }
+
+  .badge-warning {
+    @apply badge border-transparent bg-yellow-500 text-white hover:bg-yellow-600;
+  }
+
+  /* Loading Spinner */
+  .spinner {
+    @apply animate-spin rounded-full border-2 border-gray-300 border-t-blue-600;
+  }
+
+  /* Status indicators */
+  .status-dot {
+    @apply inline-block h-2 w-2 rounded-full;
+  }
+
+  .status-online {
+    @apply status-dot bg-green-600;
+  }
+
+  .status-offline {
+    @apply status-dot bg-gray-400;
+  }
+
+  .status-busy {
+    @apply status-dot bg-yellow-500;
+  }
+
+  .status-away {
+    @apply status-dot bg-red-600;
+  }
+}
+
+@layer utilities {
+  /* Custom utility classes */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Animation utilities */
+  .animate-in {
+    animation-duration: 0.2s;
+    animation-fill-mode: both;
+  }
+
+  .animate-out {
+    animation-duration: 0.15s;
+    animation-fill-mode: both;
+  }
+
+  .fade-in-0 {
+    animation-name: fadeIn;
+  }
+
+  .fade-out-0 {
+    animation-name: fadeOut;
+  }
+
+  .zoom-in-95 {
+    animation-name: zoomIn95;
+  }
+
+  .zoom-out-95 {
+    animation-name: zoomOut95;
+  }
+
+  .slide-in-from-left-1\/2 {
+    animation-name: slideInFromLeft;
+  }
+
+  .slide-in-from-top-48 {
+    animation-name: slideInFromTop;
+  }
+
+  .slide-out-to-left-1\/2 {
+    animation-name: slideOutToLeft;
+  }
+
+  .slide-out-to-top-48 {
+    animation-name: slideOutToTop;
+  }
+
+  /* Responsive text utilities */
+  .text-responsive-xs {
+    @apply text-xs sm:text-sm;
+  }
+
+  .text-responsive-sm {
+    @apply text-sm sm:text-base;
+  }
+
+  .text-responsive-base {
+    @apply text-base sm:text-lg;
+  }
+
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl;
+  }
+
+  .text-responsive-xl {
+    @apply text-xl sm:text-2xl;
+  }
+
+  /* Spacing utilities */
+  .space-y-responsive {
+    @apply space-y-4 sm:space-y-6;
+  }
+
+  .space-x-responsive {
+    @apply space-x-4 sm:space-x-6;
+  }
+
+  /* Grid utilities */
+  .grid-responsive {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+
+  .grid-responsive-2 {
+    @apply grid grid-cols-1 md:grid-cols-2;
+  }
+
+  .grid-responsive-3 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .grid-responsive-cards {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5;
+  }
+
+  .grid-responsive-stats {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6;
+  }
+
+  .grid-responsive-dashboard {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-[500px];
+  }
+
+  /* Ensure equal height cards in grids */
+  .grid-responsive-stats > *,
+  .grid-responsive-dashboard > * {
+    @apply h-full;
+  }
+
+  /* Card content alignment */
+  .card-content-centered {
+    @apply flex flex-col justify-between h-full;
+  }
+
+  /* Prevent content overflow in cards */
+  .card-content-contained {
+    @apply overflow-hidden;
+  }
+
+  /* Background utilities */
+  .bg-gradient-primary {
+    @apply bg-gradient-to-r from-primary to-primary/80;
+  }
+
+  .bg-gradient-secondary {
+    @apply bg-gradient-to-r from-secondary to-secondary/80;
+  }
+
+  .bg-gradient-accent {
+    @apply bg-gradient-to-r from-accent to-accent/80;
+  }
+
+  /* Border utilities */
+  .border-dashed-2 {
+    border-style: dashed;
+    border-width: 2px;
+  }
+
+  /* Focus utilities */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  }
+
+  /* Mobile-first responsive utilities */
+  .container-responsive {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .padding-responsive {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+
+  .margin-responsive {
+    @apply m-4 sm:m-6 lg:m-8;
+  }
+
+  /* Button responsive sizing */
+  .btn-responsive {
+    @apply px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base;
+  }
+
+  /* Card responsive padding */
+  .card-responsive {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+
+  /* Table responsive wrapper */
+  .table-responsive {
+    @apply overflow-x-auto -mx-4 sm:mx-0;
+  }
+
+  /* Form responsive layout */
+  .form-responsive {
+    @apply space-y-4 sm:space-y-6;
+  }
+
+  .form-grid-responsive {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6;
+  }
+
+  /* Navigation responsive */
+  .nav-responsive {
+    @apply flex flex-col sm:flex-row gap-2 sm:gap-4;
+  }
+
+  /* Truncate utilities */
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Accessibility utilities */
+  .sr-only {
+    @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  }
+
+  .focus-visible {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  }
+
+  .skip-link {
+    @apply absolute -top-10 left-6 bg-blue-600 text-white px-4 py-2 rounded-md z-50 focus:top-6 transition-all;
+  }
+
+  /* Focus indicators */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white;
+  }
+
+  .focus-ring-inset {
+    @apply focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500;
+  }
+}
+
+/* Mobile-specific responsive styles */
+@media (max-width: 640px) {
+  /* Ensure cards stack properly on mobile */
+  .card {
+    @apply mx-4 rounded-xl;
+  }
+
+  /* Mobile table improvements */
+  .table-container {
+    @apply rounded-xl border-0 shadow-sm;
+  }
+
+  /* Mobile form improvements */
+  .form-field {
+    @apply text-base; /* Prevent zoom on iOS */
+  }
+
+  /* Mobile button improvements */
+  .btn {
+    @apply min-h-[44px] px-4; /* Touch-friendly size */
+  }
+
+  /* Mobile navigation improvements */
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-2;
+  }
+
+  /* Mobile modal improvements */
+  .modal-content {
+    @apply mx-4 max-w-none w-auto;
+  }
+}
+
+/* Tablet-specific responsive styles */
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Tablet grid adjustments */
+  .grid-responsive-cards {
+    @apply grid-cols-2 lg:grid-cols-3;
+  }
+
+  /* Tablet form layout */
+  .form-grid-responsive {
+    @apply grid-cols-2;
+  }
+}
+
+/* Desktop-specific responsive styles */
+@media (min-width: 1025px) {
+  /* Desktop hover states */
+  .card:hover {
+    @apply shadow-lg transform scale-[1.02] transition-all duration-200;
+  }
+
+  /* Desktop table improvements */
+  .table-container {
+    @apply shadow-sm;
+  }
+}
+
+/* Accessibility-specific media queries */
+@media (prefers-contrast: high) {
+  .btn {
+    @apply border-2 border-current;
+  }
+
+  .card {
+    @apply border-2 border-gray-900;
+  }
+
+  .focus-ring {
+    @apply ring-4 ring-yellow-400;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .card:hover {
+    transform: none !important;
+  }
+}
+
+/* Additional keyframes for animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes zoomIn95 {
+  from { transform: scale(0.95); }
+  to { transform: scale(1); }
+}
+
+@keyframes zoomOut95 {
+  from { transform: scale(1); }
+  to { transform: scale(0.95); }
+}
+
+@keyframes slideInFromLeft {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideInFromTop {
+  from { transform: translateY(-48%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes slideOutToLeft {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes slideOutToTop {
+  from { transform: translateY(0); }
+  to { transform: translateY(-48%); }
+}
+
+/* RTL Form Support */
+[dir="rtl"] .form-label {
+  @apply text-right;
+  text-align: right !important;
+}
+
+[dir="rtl"] .form-label::after {
+  @apply mr-0.5 ml-0;
+}
+
+[dir="rtl"] .text-destructive {
+  @apply text-right;
+  text-align: right !important;
+}
+
+/* RTL form field containers */
+[dir="rtl"] .space-y-2 {
+  text-align: right;
+ 
+}
+
+/* RTL Input Icons */
+[dir="rtl"] .form-input {
+  @apply text-right;
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+[dir="rtl"] .form-textarea {
+  @apply text-right;
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* RTL specific input alignment */
+[dir="rtl"] input[type="text"],
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="date"],
+[dir="rtl"] textarea {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Phone number should always be LTR */
+input[type="tel"] {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* Postal code should always be LTR */
+input[id="postalCode"] {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+/* Arabic text support */
+[dir="rtl"] input,
+[dir="rtl"] textarea {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Arabic UI Text', 'Traditional Arabic';
+}
+
+/* Ensure proper spacing for Arabic text */
+[dir="rtl"] .space-y-2 > * + * {
+  margin-top: 0.5rem;
+  margin-right: 0;
+}
+
+[dir="rtl"] .space-y-6 > * + * {
+  margin-top: 1.5rem;
+  margin-right: 0;
+}
+
+/* RTL button alignment */
+[dir="rtl"] .justify-end {
+  justify-content: flex-start;
+}
+
+[dir="rtl"] .justify-start {
+  justify-content: flex-end;
+}
+
+/* RTL flex row reverse for headers */
+[dir="rtl"] .flex-row-reverse {
+  flex-direction: inherit;
+}
+[dir="rtl"] .flex-row-reverse1 {
+  flex-direction: row;
+}
+
+
+/* Force RTL alignment for all form inputs in RTL context */
+[dir="rtl"] input:not([type="tel"]):not([id="postalCode"]),
+[dir="rtl"] textarea {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Ensure placeholders are also RTL aligned */
+[dir="rtl"] input:not([type="tel"]):not([id="postalCode"])::placeholder,
+[dir="rtl"] textarea::placeholder {
+  text-align: right !important;
+  direction: rtl !important;
+}
+
+/* Additional RTL form styling */
+[dir="rtl"] .form-input:not([type="tel"]):not([id="postalCode"]) {
+  text-align: right !important;
+  direction: rtl !important;
+}
+
+[dir="rtl"] .form-textarea {
+  text-align: right !important;
+  direction: rtl !important;
+}
+
+/* Override any conflicting styles */
+[dir="rtl"] input[type="text"],
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="date"] {
+  text-align: right !important;
+  direction: rtl !important;
+}

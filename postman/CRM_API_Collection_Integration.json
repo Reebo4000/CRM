@@ -1,0 +1,192 @@
+{
+  "info": {
+    "name": "CRM Integration API",
+    "description": "Integration API endpoints for external systems (n8n, WhatsApp, etc.)",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-API-Key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{integration_api_key}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "integration_api_key",
+      "value": "your-integration-api-key-here",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Integration API",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/integration/health",
+              "host": ["{{base_url}}"],
+              "path": ["integration", "health"]
+            },
+            "description": "Health check for integration API"
+          }
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"123 Main St, City, State 12345\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/integration/customers",
+              "host": ["{{base_url}}"],
+              "path": ["integration", "customers"]
+            },
+            "description": "Create a new customer via integration API"
+          }
+        },
+        {
+          "name": "Get Customer by Phone/Email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/integration/customers?phone=+1234567890",
+              "host": ["{{base_url}}"],
+              "path": ["integration", "customers"],
+              "query": [
+                {
+                  "key": "phone",
+                  "value": "+1234567890",
+                  "description": "Search by phone number"
+                },
+                {
+                  "key": "email",
+                  "value": "john.doe@example.com",
+                  "description": "Search by email",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get customer by phone or email"
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Wireless Mouse\",\n  \"description\": \"Ergonomic wireless mouse with long battery life\",\n  \"price\": 29.99,\n  \"stockQuantity\": 100,\n  \"category\": \"Electronics\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/integration/products",
+              "host": ["{{base_url}}"],
+              "path": ["integration", "products"]
+            },
+            "description": "Create a new product via integration API"
+          }
+        },
+        {
+          "name": "Get Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/integration/products?category=Electronics&inStock=true",
+              "host": ["{{base_url}}"],
+              "path": ["integration", "products"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Electronics"
+                },
+                {
+                  "key": "inStock",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Get products with stock information"
+          }
+        },
+        {
+          "name": "Update Product Inventory",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stockQuantity\": 150,\n  \"operation\": \"set\",\n  \"reason\": \"Inventory replenishment\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/integration/products/1/inventory",
+              "host": ["{{base_url}}"],
+              "path": ["integration", "products", "1", "inventory"]
+            },
+            "description": "Update product inventory"
+          }
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": {\n    \"phone\": \"+1234567890\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john.doe@example.com\"\n  },\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"productId\": 2,\n      \"quantity\": 1\n    }\n  ],\n  \"notes\": \"Order placed via WhatsApp integration\",\n  \"source\": \"whatsapp\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/integration/orders",
+              "host": ["{{base_url}}"],
+              "path": ["integration", "orders"]
+            },
+            "description": "Create a new order via integration API"
+          }
+        }
+      ]
+    }
+  ]
+}

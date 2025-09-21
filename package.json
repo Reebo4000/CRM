@@ -1,0 +1,75 @@
+{
+  "name": "crm-system",
+  "version": "1.0.0",
+  "description": "Complete CRM System with Node.js backend and React frontend",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm ci --only=production",
+    "start": "npm run start:backend",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm run preview",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:frontend": "cd frontend && npm run lint",
+    "setup": "npm run setup:backend && npm run setup:frontend",
+    "setup:backend": "cd backend && npm install",
+    "setup:frontend": "cd frontend && npm install",
+    "migrate": "cd backend && npx sequelize-cli db:migrate",
+    "migrate:status": "cd backend && npx sequelize-cli db:migrate:status",
+    "migrate:undo": "cd backend && npx sequelize-cli db:migrate:undo",
+    "migrate:undo:all": "cd backend && npx sequelize-cli db:migrate:undo:all",
+    "seed": "cd backend && npx sequelize-cli db:seed:all",
+    "seed:undo": "cd backend && npx sequelize-cli db:seed:undo:all",
+    "schema:check": "node scripts/check-migration-status.js",
+    "schema:dump": "node scripts/generate-schema-dump.js",
+    "backup": "bash scripts/database-backup.sh",
+    "restore": "bash scripts/database-restore.sh",
+    "deploy:production": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1 -Build -Deploy",
+    "deploy:build": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1 -Build",
+    "deploy:restart": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1 -Restart",
+    "docker:build": "docker-compose -f docker-compose.prod.yml build",
+    "docker:up": "docker-compose -f docker-compose.prod.yml up -d",
+    "docker:down": "docker-compose -f docker-compose.prod.yml down",
+    "docker:logs": "docker-compose -f docker-compose.prod.yml logs -f",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
+    "docker:dev:down": "docker-compose -f docker-compose.dev.yml down",
+    "docker:dev:logs": "docker-compose -f docker-compose.dev.yml logs -f",
+    "health": "curl -f http://localhost:5000/api/health || exit 1"
+  },
+  "keywords": [
+    "crm",
+    "nodejs",
+    "react",
+    "postgresql",
+    "express",
+    "sequelize"
+  ],
+  "author": "CRM System",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.10.0",
+    "i18n": "^0.15.1",
+    "i18next": "^25.3.2",
+    "i18next-browser-languagedetector": "^8.2.0",
+    "react-i18next": "^15.6.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "your-repository-url"
+  }
+}

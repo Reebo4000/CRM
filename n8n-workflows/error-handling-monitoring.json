@@ -1,0 +1,183 @@
+{
+  "name": "Enhanced Error Handling and Monitoring Nodes",
+  "description": "Additional nodes to add comprehensive error handling and monitoring to the Gemini CRM AI Agent workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Global Error Handler\nconst handleError = (error, context) => {\n  const errorData = {\n    timestamp: new Date().toISOString(),\n    workflowId: 'gemini-crm-ai-agent',\n    executionId: $execution.id,\n    nodeId: context.nodeId || 'unknown',\n    userId: context.userId || null,\n    chatId: context.chatId || null,\n    errorType: error.name || 'UnknownError',\n    errorMessage: error.message || 'Unknown error occurred',\n    errorStack: error.stack || null,\n    inputData: context.inputData || null,\n    severity: context.severity || 'medium'\n  };\n  \n  // Log error\n  console.error('Workflow Error:', JSON.stringify(errorData, null, 2));\n  \n  // Store error in global context for monitoring\n  if (!global.workflowErrors) {\n    global.workflowErrors = [];\n  }\n  global.workflowErrors.push(errorData);\n  \n  // Keep only last 100 errors\n  if (global.workflowErrors.length > 100) {\n    global.workflowErrors = global.workflowErrors.slice(-100);\n  }\n  \n  // Determine user-friendly error message in Arabic\n  let userMessage = 'عذراً، حدث خطأ مؤقت. يرجى المحاولة مرة أخرى.';\n  \n  if (error.message?.includes('CRM')) {\n    userMessage = 'عذراً، نواجه مشكلة في الاتصال بنظام إدارة العملاء. يرجى المحاولة بعد قليل.';\n  } else if (error.message?.includes('OpenAI') || error.message?.includes('AI')) {\n    userMessage = 'عذراً، نواجه مشكلة في نظام الذكاء الاصطناعي. يرجى المحاولة بعد قليل.';\n  } else if (error.message?.includes('Telegram')) {\n    userMessage = 'عذراً، نواجه مشكلة في إرسال الرسالة. يرجى المحاولة مرة أخرى.';\n  } else if (error.message?.includes('timeout')) {\n    userMessage = 'عذراً، استغرق الطلب وقتاً أطول من المتوقع. يرجى المحاولة مرة أخرى.';\n  }\n  \n  return {\n    error: true,\n    errorData: errorData,\n    userMessage: userMessage,\n    chatId: context.chatId,\n    shouldNotifyAdmin: context.severity === 'high'\n  };\n};\n\n// Export for use in other nodes\nglobal.handleError = handleError;\n\nreturn { status: 'Error handler initialized' };"
+      },
+      "id": "error-handler",
+      "name": "Global Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Performance Monitor\nconst monitorPerformance = (stepName, startTime, endTime, additionalData = {}) => {\n  const duration = endTime - startTime;\n  \n  const performanceData = {\n    timestamp: new Date().toISOString(),\n    workflowId: 'gemini-crm-ai-agent',\n    executionId: $execution.id,\n    step: stepName,\n    duration: duration,\n    startTime: new Date(startTime).toISOString(),\n    endTime: new Date(endTime).toISOString(),\n    ...additionalData\n  };\n  \n  // Log performance data\n  console.log('Performance:', JSON.stringify(performanceData, null, 2));\n  \n  // Store in global context for monitoring\n  if (!global.performanceMetrics) {\n    global.performanceMetrics = [];\n  }\n  global.performanceMetrics.push(performanceData);\n  \n  // Keep only last 1000 metrics\n  if (global.performanceMetrics.length > 1000) {\n    global.performanceMetrics = global.performanceMetrics.slice(-1000);\n  }\n  \n  // Alert on slow performance\n  const thresholds = {\n    'customer-lookup': 2000,\n    'product-retrieval': 3000,\n    'ai-processing': 5000,\n    'telegram-response': 1000\n  };\n  \n  const threshold = thresholds[stepName] || 3000;\n  if (duration > threshold) {\n    console.warn(`⚠️ Slow performance detected: ${stepName} took ${duration}ms (threshold: ${threshold}ms)`);\n  }\n  \n  return performanceData;\n};\n\n// Export for use in other nodes\nglobal.monitorPerformance = monitorPerformance;\n\nreturn { status: 'Performance monitor initialized' };"
+      },
+      "id": "performance-monitor",
+      "name": "Performance Monitor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Rate Limiter with Error Handling\nconst checkRateLimit = (userId, chatId) => {\n  try {\n    const now = Date.now();\n    const windowMs = 60000; // 1 minute\n    const maxRequests = 10; // 10 requests per minute\n    \n    if (!global.rateLimits) {\n      global.rateLimits = {};\n    }\n    \n    if (!global.rateLimits[userId]) {\n      global.rateLimits[userId] = {\n        requests: [],\n        blocked: false\n      };\n    }\n    \n    const userLimits = global.rateLimits[userId];\n    \n    // Clean old requests\n    userLimits.requests = userLimits.requests.filter(timestamp => now - timestamp < windowMs);\n    \n    // Check if rate limited\n    if (userLimits.requests.length >= maxRequests) {\n      console.warn(`Rate limit exceeded for user ${userId}`);\n      return {\n        rateLimited: true,\n        message: 'يرجى الانتظار قليلاً قبل إرسال رسالة أخرى 🙏\\nلضمان جودة الخدمة، يُسمح بـ 10 رسائل كل دقيقة.',\n        chatId: chatId,\n        retryAfter: Math.ceil(windowMs / 1000)\n      };\n    }\n    \n    // Add current request\n    userLimits.requests.push(now);\n    \n    return {\n      rateLimited: false,\n      remainingRequests: maxRequests - userLimits.requests.length\n    };\n    \n  } catch (error) {\n    console.error('Rate limiter error:', error);\n    // On error, allow the request to proceed\n    return { rateLimited: false, error: error.message };\n  }\n};\n\n// Export for use in other nodes\nglobal.checkRateLimit = checkRateLimit;\n\nreturn { status: 'Rate limiter initialized' };"
+      },
+      "id": "rate-limiter",
+      "name": "Rate Limiter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Health Check Monitor\nconst performHealthCheck = async () => {\n  const healthData = {\n    timestamp: new Date().toISOString(),\n    workflowId: 'gemini-crm-ai-agent',\n    services: {},\n    overall: 'healthy'\n  };\n  \n  try {\n    // Check CRM API\n    const crmStartTime = Date.now();\n    try {\n      const crmResponse = await fetch('http://localhost:5000/api/integration/health', {\n        method: 'GET',\n        headers: {\n          'X-API-Key': process.env.GEMINI_CRM_API_KEY\n        },\n        timeout: 5000\n      });\n      \n      healthData.services.crm = {\n        status: crmResponse.ok ? 'healthy' : 'unhealthy',\n        responseTime: Date.now() - crmStartTime,\n        httpStatus: crmResponse.status\n      };\n    } catch (error) {\n      healthData.services.crm = {\n        status: 'unhealthy',\n        error: error.message,\n        responseTime: Date.now() - crmStartTime\n      };\n      healthData.overall = 'degraded';\n    }\n    \n    // Check OpenAI API (simple test)\n    healthData.services.openai = {\n      status: process.env.OPENAI_API_KEY ? 'configured' : 'not_configured'\n    };\n    \n    if (!process.env.OPENAI_API_KEY) {\n      healthData.overall = 'degraded';\n    }\n    \n    // Check Telegram API\n    const telegramStartTime = Date.now();\n    try {\n      const telegramResponse = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getMe`, {\n        timeout: 5000\n      });\n      \n      healthData.services.telegram = {\n        status: telegramResponse.ok ? 'healthy' : 'unhealthy',\n        responseTime: Date.now() - telegramStartTime,\n        httpStatus: telegramResponse.status\n      };\n    } catch (error) {\n      healthData.services.telegram = {\n        status: 'unhealthy',\n        error: error.message,\n        responseTime: Date.now() - telegramStartTime\n      };\n      healthData.overall = 'degraded';\n    }\n    \n    // Check system resources\n    healthData.system = {\n      memory: process.memoryUsage(),\n      uptime: process.uptime(),\n      nodeVersion: process.version\n    };\n    \n    // Store health data\n    if (!global.healthChecks) {\n      global.healthChecks = [];\n    }\n    global.healthChecks.push(healthData);\n    \n    // Keep only last 24 health checks\n    if (global.healthChecks.length > 24) {\n      global.healthChecks = global.healthChecks.slice(-24);\n    }\n    \n    console.log('Health Check:', JSON.stringify(healthData, null, 2));\n    \n    return healthData;\n    \n  } catch (error) {\n    console.error('Health check failed:', error);\n    return {\n      timestamp: new Date().toISOString(),\n      overall: 'unhealthy',\n      error: error.message\n    };\n  }\n};\n\n// Export for use in other nodes\nglobal.performHealthCheck = performHealthCheck;\n\nreturn { status: 'Health monitor initialized' };"
+      },
+      "id": "health-monitor",
+      "name": "Health Monitor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Conversation Logger\nconst logConversation = (conversationData) => {\n  try {\n    const logEntry = {\n      timestamp: new Date().toISOString(),\n      workflowId: 'gemini-crm-ai-agent',\n      executionId: $execution.id,\n      userId: conversationData.userId,\n      chatId: conversationData.chatId,\n      customerName: conversationData.customerName,\n      customerId: conversationData.customerId,\n      messageText: conversationData.messageText,\n      intent: conversationData.intent,\n      aiResponse: conversationData.aiResponse,\n      recommendationsCount: conversationData.recommendationsCount || 0,\n      responseTime: conversationData.responseTime,\n      success: conversationData.success !== false,\n      error: conversationData.error || null\n    };\n    \n    // Log to console\n    console.log('Conversation Log:', JSON.stringify(logEntry, null, 2));\n    \n    // Store in global context\n    if (!global.conversationLogs) {\n      global.conversationLogs = [];\n    }\n    global.conversationLogs.push(logEntry);\n    \n    // Keep only last 1000 conversations\n    if (global.conversationLogs.length > 1000) {\n      global.conversationLogs = global.conversationLogs.slice(-1000);\n    }\n    \n    // Analytics tracking\n    if (!global.conversationAnalytics) {\n      global.conversationAnalytics = {\n        totalConversations: 0,\n        intentCounts: {},\n        averageResponseTime: 0,\n        successRate: 0,\n        uniqueUsers: new Set()\n      };\n    }\n    \n    const analytics = global.conversationAnalytics;\n    analytics.totalConversations++;\n    analytics.uniqueUsers.add(conversationData.userId);\n    \n    // Track intents\n    if (conversationData.intent) {\n      analytics.intentCounts[conversationData.intent] = (analytics.intentCounts[conversationData.intent] || 0) + 1;\n    }\n    \n    // Update success rate\n    const recentLogs = global.conversationLogs.slice(-100); // Last 100 conversations\n    const successfulLogs = recentLogs.filter(log => log.success);\n    analytics.successRate = (successfulLogs.length / recentLogs.length) * 100;\n    \n    // Update average response time\n    const logsWithResponseTime = recentLogs.filter(log => log.responseTime);\n    if (logsWithResponseTime.length > 0) {\n      const totalResponseTime = logsWithResponseTime.reduce((sum, log) => sum + log.responseTime, 0);\n      analytics.averageResponseTime = totalResponseTime / logsWithResponseTime.length;\n    }\n    \n    return logEntry;\n    \n  } catch (error) {\n    console.error('Conversation logging error:', error);\n    return { error: error.message };\n  }\n};\n\n// Export for use in other nodes\nglobal.logConversation = logConversation;\n\nreturn { status: 'Conversation logger initialized' };"
+      },
+      "id": "conversation-logger",
+      "name": "Conversation Logger",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendMessage",
+        "chatId": "={{ $json.chatId }}",
+        "text": "{{ $json.userMessage }}",
+        "additionalFields": {
+          "parse_mode": "HTML",
+          "reply_markup": {
+            "inline_keyboard": [
+              [
+                {
+                  "text": "🔄 حاول مرة أخرى",
+                  "callback_data": "retry_last_action"
+                },
+                {
+                  "text": "👨‍💼 تواصل مع الدعم",
+                  "callback_data": "contact_support"
+                }
+              ]
+            ]
+          }
+        }
+      },
+      "id": "send-error-message",
+      "name": "Send Error Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1100,
+        200
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-bot-credentials",
+          "name": "Telegram Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "should-notify-admin",
+              "leftValue": "={{ $json.shouldNotifyAdmin }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equal"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-admin-notification",
+      "name": "Check Admin Notification",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "{{ $env.ADMIN_WEBHOOK_URL }}",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "jsonBody": "{\n  \"alert\": \"Gemini CRM AI Agent Error\",\n  \"severity\": \"{{ $json.errorData.severity }}\",\n  \"timestamp\": \"{{ $json.errorData.timestamp }}\",\n  \"error\": \"{{ $json.errorData.errorMessage }}\",\n  \"userId\": \"{{ $json.errorData.userId }}\",\n  \"chatId\": \"{{ $json.errorData.chatId }}\",\n  \"workflowId\": \"{{ $json.errorData.workflowId }}\",\n  \"executionId\": \"{{ $json.errorData.executionId }}\"\n}"
+      },
+      "id": "notify-admin",
+      "name": "Notify Admin",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1500,
+        300
+      ],
+      "continueOnFail": true
+    }
+  ],
+  "usage_instructions": {
+    "integration": "Add these nodes to your main workflow and connect them at appropriate points",
+    "error_handling": "Wrap critical nodes with try-catch using the Global Error Handler",
+    "monitoring": "Use Performance Monitor to track execution times",
+    "rate_limiting": "Add Rate Limiter before processing user messages",
+    "health_checks": "Set up periodic health checks using a separate schedule trigger",
+    "logging": "Use Conversation Logger to track all user interactions"
+  },
+  "example_integration": {
+    "customer_lookup_with_error_handling": {
+      "before_node": "// Add performance monitoring\nconst startTime = Date.now();",
+      "after_node": "// Monitor performance and handle errors\ntry {\n  global.monitorPerformance('customer-lookup', startTime, Date.now(), {\n    userId: $json.userContext.telegramId,\n    found: !!$json.customer\n  });\n} catch (error) {\n  return global.handleError(error, {\n    nodeId: 'customer-lookup',\n    userId: $json.userContext.telegramId,\n    chatId: $json.userContext.chatId,\n    severity: 'medium',\n    inputData: $json.userContext\n  });\n}"
+    }
+  }
+}

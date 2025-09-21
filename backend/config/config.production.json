@@ -1,0 +1,31 @@
+{
+  "production": {
+    "username": "crm_user",
+    "password": "Reebo@2004",
+    "database": "crm_production",
+    "host": "postgres",
+    "port": 5432,
+    "dialect": "postgres",
+    "logging": false,
+    "pool": {
+      "max": 20,
+      "min": 5,
+      "acquire": 30000,
+      "idle": 10000
+    },
+    "dialectOptions": {
+      "ssl": false,
+      "connectTimeout": 60000
+    },
+    "define": {
+      "timestamps": true,
+      "underscored": false,
+      "freezeTableName": true
+    },
+    "benchmark": false,
+    "isolationLevel": "READ_COMMITTED",
+    "retry": {
+      "max": 3
+    }
+  }
+}
